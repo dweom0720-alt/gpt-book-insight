@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#31483d">
+  <meta name="description" content="책 한 권을 깊이 이해하고 나만의 통찰로 만드는 AI 독서 비서">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <title>BOOK INSIGHT — 나만의 AI 독서 비서</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">B</span><span>BOOK <b>INSIGHT</b></span></a>
+    <div class="top-actions"><span class="top-note">YOUR PERSONAL READING SPACE</span><button id="installBtn" class="install-button hidden" type="button">앱 설치</button></div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <p class="eyebrow">READ LESS. UNDERSTAND MORE.</p>
+      <h1>한 권의 책에서<br><em>더 깊은 통찰</em>을 얻다.</h1>
+      <p class="sub">책을 검색하거나 파일을 올리세요.<br>AI가 핵심 주장부터 현실 적용까지 분석합니다.</p><p class="device-note">폴드와 태블릿 화면에 맞춰 자동으로 최적화됩니다. 브라우저 메뉴에서 홈 화면에 추가하면 앱처럼 사용할 수 있습니다.</p>
+    </section>
+
+    <section class="panel search-panel">
+      <label for="bookSearch">책 검색</label>
+      <div class="search-row">
+        <input id="bookSearch" type="search" placeholder="책 제목 또는 저자를 입력하세요">
+        <button id="searchBtn" class="primary">검색</button>
+      </div>
+      <div id="searchStatus" class="hint">Google Books와 Open Library에서 도서 정보를 찾습니다.</div>
+      <div id="searchResults" class="results"></div>
+    </section>
+
+    <section class="panel upload-panel">
+      <div class="section-head">
+        <div><p class="eyebrow">YOUR BOOK</p><h2>내 책 파일로 분석하기</h2></div>
+        <span class="pill">PDF · EPUB · TXT</span>
+      </div>
+      <label class="dropzone" for="fileInput">
+        <span class="upload-icon">↑</span>
+        <strong>파일을 선택하거나 여기에 놓으세요</strong>
+        <small>현재 버전은 텍스트 추출 가능한 PDF·EPUB·TXT를 지원합니다.</small>
+        <input id="fileInput" type="file" accept=".pdf,.epub,.txt,text/plain,application/pdf,application/epub+zip">
+      </label>
+      <div id="fileStatus" class="hint">파일은 브라우저에서 텍스트로 추출한 뒤 분석 요청에 사용됩니다.</div>
+    </section>
+
+    <section class="panel details-panel">
+      <div class="section-head"><div><p class="eyebrow">ANALYSIS SETTINGS</p><h2>분석할 책 정보</h2></div></div>
+      <div class="form-grid">
+        <div><label for="titleInput">책 제목</label><input id="titleInput" placeholder="책 제목"></div>
+        <div><label for="authorInput">저자</label><input id="authorInput" placeholder="저자 이름"></div>
+        <div class="wide"><label for="categoryInput">분야</label>
+          <select id="categoryInput">
+            <option>자동 분류</option><option>경영·리더십</option><option>경제·투자</option><option>철학·인문학</option>
+            <option>심리학</option><option>역사</option><option>과학·기술</option><option>자기계발</option><option>문학</option><option>기타</option>
+          </select>
+        </div>
+      </div>
+      <div class="source-note"><span class="dot"></span><span id="sourceInfo">아직 분석할 원문이 없습니다. 검색한 책의 서지정보만으로는 전문 분석을 할 수 없습니다.</span></div>
+      <button id="analyzeBtn" class="primary full" disabled>전문 분석 시작</button>
+      <p class="micro">분석은 AI API 사용량에 따라 무료 한도가 적용되거나 비용이 발생할 수 있습니다.</p>
+    </section>
+
+    <section id="progressPanel" class="panel hidden">
+      <div class="section-head"><div><p class="eyebrow">WORKING</p><h2>책을 분석하고 있습니다</h2></div></div>
+      <div class="progress-track"><div id="progressBar"></div></div>
+      <p id="progressText" class="hint">원문을 검토하고 핵심 구조를 정리하는 중입니다.</p>
+    </section>
+
+    <section id="resultPanel" class="panel hidden">
+      <div class="section-head result-head">
+        <div><p class="eyebrow">YOUR BOOK REPORT</p><h2 id="resultTitle">분석 결과</h2></div>
+        <button id="saveBtn" class="secondary">서재에 저장</button>
+      </div>
+      <div class="result-tools">
+        <button id="speakBtn" class="secondary">▶ 듣기</button>
+        <button id="stopSpeakBtn" class="secondary">■ 정지</button>
+        <button id="mindmapBtn" class="secondary">마인드맵 보기</button>
+      </div>
+      <div id="mindmapWrap" class="mindmap hidden"><pre class="mermaid" id="mindmap"></pre></div>
+      <article id="analysisOutput" class="analysis-output"></article>
+      <p id="analysisMeta" class="micro"></p>
+    </section>
+
+    <section class="panel library-panel">
+      <div class="section-head"><div><p class="eyebrow">MY LIBRARY</p><h2>나의 독서 서재</h2></div><button id="clearLibraryBtn" class="text-button">기록 비우기</button></div>
+      <div id="libraryList" class="library-list"><p class="hint">저장한 분석 결과가 여기에 표시됩니다.</p></div>
+    </section>
+    <footer>BOOK INSIGHT · 책의 지식을 나의 통찰로</footer>
+  </main>
+  <script type="module" src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(err => console.warn("Service worker registration failed", err)));
+    }
+  </script>
+</body>
+</html>

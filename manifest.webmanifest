@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "BOOK INSIGHT - AI 독서 비서",
+  "short_name": "BOOK INSIGHT",
+  "description": "책 한 권을 깊이 이해하고 나만의 통찰로 만드는 AI 독서 비서",
+  "lang": "ko-KR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f7f6f2",
+  "theme_color": "#31483d",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
