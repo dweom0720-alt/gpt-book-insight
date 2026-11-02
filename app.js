@@ -1,4 +1,4 @@
-const API_BASE = "https://YOUR-WORKER.workers.dev"; // 배포 후 본인의 Worker 주소로 변경
+const API_BASE = "https://gptbook-insight.dweom0720.workers.dev"; // 배포 후 본인의 Worker 주소로 변경
 const $ = (id) => document.getElementById(id);
 let extractedText = "";
 let currentAnalysis = "";
